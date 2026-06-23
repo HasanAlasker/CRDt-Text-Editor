@@ -4,7 +4,7 @@ import { DynamicIcon, IconName } from "lucide-react/dynamic";
 interface Props {
   title: string;
   onclick?: () => void;
-  style?: "pri" | "sec" | "red";
+  style?: "pri" | "sec" | "mid" | "red";
   icon?: IconName;
   type?: "submit" | "button";
 }
@@ -12,6 +12,7 @@ interface Props {
 const MAP = {
   pri: { className: "bg-mainText text-black" },
   sec: { className: "bg-card text-secText" },
+  mid: { className: "bg-background text-white" },
   red: { className: "bg-red text-mainText border-red" },
 };
 

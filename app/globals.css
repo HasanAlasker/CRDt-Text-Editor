@@ -11,6 +11,10 @@
   --green: rgb(34, 230, 73);
 }
 
+html {
+  scrollbar-width: none;
+}
+
 .prose {
   --tw-prose-body: var(--mainText);
   --tw-prose-headings: var(--mainText);

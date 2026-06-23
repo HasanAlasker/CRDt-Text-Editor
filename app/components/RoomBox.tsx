@@ -7,7 +7,7 @@ export default function RoomBox({ id }: { id: string }) {
     <div className="flex justify-between items-center">
       <h2 className="truncate">{id}</h2>
       <Link href={`/room/${id}`}>
-        <Button title="Join" style="sec" />
+        <Button title="Join" style="mid" />
       </Link>
     </div>
   );

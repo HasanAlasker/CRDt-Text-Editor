@@ -1,11 +1,13 @@
 "use client";
-import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
-import Markdown from "react-markdown";
-import remarkBreaks from "remark-breaks";
 import { useState } from "react";
 import Button from "@/app/components/Button";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
+  ssr: false,
+});
 
 export default function page() {
   const [value, setValue] = useState("");
