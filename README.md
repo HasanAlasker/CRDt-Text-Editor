@@ -1,36 +1,212 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📝 Collaborative Offline-First Markdown Editor
 
-## Getting Started
+![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-06B6D4?logo=tailwindcss)
+![Yjs](https://img.shields.io/badge/Yjs-CRDT-orange)
+![WebSockets](https://img.shields.io/badge/WebSockets-Real--Time-green)
+![IndexedDB](https://img.shields.io/badge/IndexedDB-Offline--First-purple)
+![Zustand](https://img.shields.io/badge/Zustand-State%20Management-brown)
 
-First, run the development server:
+A modern collaborative Markdown editor built with an **offline-first architecture**. Users can create or join shared rooms, edit documents simultaneously in real time, and continue working even when the network connection is lost.
+
+---
+
+## 📸 Preview
+
+![Dashboard Overview](https://media.licdn.com/dms/image/v2/D4D2DAQFXhfnDWOcVpQ/profile-treasury-image-shrink_1280_1280/B4DZ75pCphGwAY-/0/1782304746502?e=1782910800&v=beta&t=EIEngQW6HTbhW2999NiZF4vLon-N0oQFX4BAg-OhdI4)
+![Dashboard Overview](https://media.licdn.com/dms/image/v2/D4D2DAQFhlqtJwFAvww/profile-treasury-image-shrink_1280_1280/B4DZ75pCn_KsAY-/0/1782304746226?e=1782910800&v=beta&t=N8JEbFmRNTerBk9_6Q9iAcsMgHExVtXMsKPR1pguNn4)
+
+---
+
+## ✨ Features
+
+### 🔄 Real-Time Collaboration
+
+* Concurrent editing with multiple users.
+* Conflict-free synchronization powered by CRDTs.
+* Instant updates across all connected peers.
+
+### 📦 Offline-First Experience
+
+* Documents are automatically persisted locally.
+* Continue writing without an internet connection.
+* Seamless synchronization when connectivity returns.
+
+### 📝 Rich Markdown Editing
+
+* Headings
+* Bold & Italic
+* Lists & Checklists
+* Links & Images
+* Live Markdown Preview
+* Code Blocks
+
+### 👥 Presence Awareness
+
+* Track active collaborators in each room.
+* Live participant count updates.
+
+### 🔐 Room Management
+
+* Public collaboration rooms.
+* Private rooms with shareable URLs.
+* Join sessions instantly without complex setup.
+
+---
+
+## 🏗️ Architecture
+
+### CRDT-Based Synchronization (Yjs)
+
+Traditional collaborative editors often rely on Operational Transformation (OT), requiring a central authority to resolve conflicts.
+
+This project instead uses **Conflict-Free Replicated Data Types (CRDTs)** through Yjs.
+
+Benefits:
+
+* No manual conflict resolution
+* Eventual consistency
+* Reduced server complexity
+* Better offline support
+* Automatic merge handling
+
+### Offline Persistence
+
+Document state is persisted locally using **IndexedDB** via the Y-IndexedDB provider.
+
+**Workflow:**
+
+```text
+User Types
+      ↓
+Yjs Document
+      ↓
+IndexedDB (Local Backup)
+      ↓
+WebSocket Provider
+      ↓
+Other Connected Peers
+```
+
+When the connection is restored, Yjs computes and synchronizes only the missing updates.
+
+### State Management
+
+The application separates collaborative document state from UI state:
+
+| Responsibility               | Technology  |
+| ---------------------------- | ----------- |
+| Collaborative Document State | Yjs         |
+| Offline Persistence          | IndexedDB   |
+| Real-Time Networking         | Y-WebSocket |
+| UI State                     | Zustand     |
+
+This separation keeps the architecture maintainable and avoids unnecessary re-renders.
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* Next.js
+* TypeScript
+* Tailwind CSS
+
+### Collaboration
+
+* Yjs
+* Y-WebSocket
+
+### Storage
+
+* IndexedDB
+* Y-IndexedDB
+
+### State Management
+
+* Zustand
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+* Node.js 18+
+* npm, pnpm, or yarn
+
+### Clone Repository
+
+```bash
+git clone https://github.com/yourusername/repository-name.git
+cd repository-name
+```
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Start Y-WebSocket Server
+
+```bash
+npx y-websocket
+```
+
+### Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🧠 What I Learned
 
-To learn more about Next.js, take a look at the following resources:
+Building this project provided hands-on experience with:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* Distributed systems concepts
+* Conflict-Free Replicated Data Types (CRDTs)
+* Offline-first application design
+* Browser persistence using IndexedDB
+* Real-time synchronization with WebSockets
+* State isolation and performance optimization
+* Collaborative software architecture
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🔮 Future Improvements
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* User authentication
+* Cursor presence indicators
+* Shared comments and annotations
+* Document history & versioning
+* End-to-end encryption
+* Export to PDF and HTML
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 📄 License
+
+MIT License
+
+---
+
+## 👨‍💻 Author
+
+**Hasan Alasker**
+
+Portfolio: https://alasker.dev
+
+LinkedIn: https://www.linkedin.com/in/hasan-alasker/
+
+Email: [hasanalasker.contact@gmail.com](mailto:hasanalasker.contact@gmail.com)
