@@ -4,68 +4,52 @@ import { useEffect, useRef, useState } from "react";
 import Button from "@/app/components/Button";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import * as Y from "yjs";
 import { useParams } from "next/navigation";
-import { IndexeddbPersistence } from "y-indexeddb";
-import { WebsocketProvider } from "y-websocket";
 import { applyDiff } from "@/app/functions/typeDif";
+import { useRoomStore } from "@/app/store/useRoomStore";
 
 const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
 });
 
 export default function page() {
-  const yDocRef = useRef<Y.Doc | null>(null);
-  const yTextRef = useRef<Y.Text | null>(null);
-  const isLocalChange = useRef(false);
-
-  const [text, setText] = useState("");
   const params = useParams();
   const roomId = params.id as string;
 
+  const initRoom = useRoomStore((state) => state.initRoom);
+  const destroyRoom = useRoomStore((state) => state.destroyRoom);
+  const ytext = useRoomStore((state) => state.ytext);
+
+  const [text, setText] = useState("");
+  const isLocalChange = useRef(false);
+
   useEffect(() => {
-    const ydoc = new Y.Doc();
-    const ytext = ydoc.getText("markdown-text");
+    initRoom(roomId);
+    return () => destroyRoom();
+  }, [roomId]);
 
-    yDocRef.current = ydoc;
-    yTextRef.current = ytext;
+  useEffect(() => {
+    if (!ytext) return;
+    setText(ytext.toString());
 
-    const presistence = new IndexeddbPersistence(roomId, ydoc);
-    presistence.on("synced", () => {
-      setText(ytext.toString());
-    });
-
-    const wsProvider = new WebsocketProvider(
-      "ws://localhost:1234",
-      roomId,
-      ydoc,
-    );
-
-    ytext.observe(() => {
+    const observer = () => {
       // if i made the change, don't re render (prevents infinite loop)
       if (isLocalChange.current) return;
-
       setText(ytext.toString());
-    });
+    };
+
+    ytext.observe(observer);
 
     return () => {
-      presistence.destroy();
-      wsProvider.destroy();
-      ydoc.destroy();
+      ytext.unobserve(observer);
     };
-  }, []);
+  }, [ytext]);
 
   const handleTyping = (newValue: string) => {
+    if (!ytext) return;
     isLocalChange.current = true;
     setText(newValue);
-
-    const ytext = yTextRef.current;
-    if (!ytext) return;
-
-    yDocRef.current?.transact(() => {
-      applyDiff(ytext, newValue );
-    });
-
+    ytext.doc?.transact(() => applyDiff(ytext, newValue));
     isLocalChange.current = false;
   };
 

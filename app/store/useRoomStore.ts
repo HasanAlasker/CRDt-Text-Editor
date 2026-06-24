@@ -34,7 +34,7 @@ export const useRoomStore = create<RoomState>((set, get) => ({
     const ytext = ydoc.getText("markdown-text");
     const persistence = new IndexeddbPersistence(roomId, ydoc);
     const wsProvider = new WebsocketProvider(
-      "ws://localhost:1234", // todo: add to constants
+      "ws://localhost:1234",
       roomId,
       ydoc,
     );
