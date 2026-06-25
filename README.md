@@ -157,7 +157,7 @@ npm install
 ### Start Y-WebSocket Server
 
 ```bash
-npx y-websocket
+npx y-websocket@1.5.4
 ```
 
 ### Run Development Server
